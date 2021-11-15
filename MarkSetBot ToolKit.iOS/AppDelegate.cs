@@ -44,5 +44,5 @@ namespace MarkSetBot_ToolKit.iOS
         /*
         THIS METHOD IS NEEDED BY MOST OF SHINY - ALWAYS ADD IT
         */
-        public override void PerformFetch(UIApplication application, Action<UIBackgroundFetchResult> completionHandler) => this.ShinyPerformFetch(completionHandler);S}
+        public override void PerformFetch(UIApplication application, Action<UIBackgroundFetchResult> completionHandler) => this.ShinyPerformFetch(completionHandler);}
 }
