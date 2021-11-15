@@ -16,7 +16,6 @@
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
     <TargetFrameworkVersion>v11.0</TargetFrameworkVersion>
     <AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
     <AndroidUseAapt2>true</AndroidUseAapt2>
@@ -56,6 +55,12 @@
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />
     <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
+    <PackageReference Include="Shiny.BluetoothLE">
+      <Version>2.3.0.2906</Version>
+    </PackageReference>
+    <PackageReference Include="XF.Material">
+      <Version>1.7.8</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
@@ -88,7 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MarkSetBot ToolKit\MarkSetBot ToolKit.csproj">
-      <Project>{4E87A278-18F0-44AF-A794-8776836A025F}</Project>
+      <Project>{A7CC20D8-03D6-4254-87AE-C340F4D33650}</Project>
       <Name>MarkSetBot ToolKit</Name>
     </ProjectReference>
   </ItemGroup>
