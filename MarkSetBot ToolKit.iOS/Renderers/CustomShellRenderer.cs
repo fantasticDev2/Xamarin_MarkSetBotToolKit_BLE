@@ -19,9 +19,7 @@ namespace MarkSetBot_ToolKit.iOS.Renderers
                     var appearance = new UINavigationBarAppearance();
                     appearance.ConfigureWithOpaqueBackground();
                     //appearance.BackgroundColor = new UIColor(red: 0.86f, green: 0.24f, blue: 0.00f, alpha: 1.00f);
-
                     //appearance.TitleTextAttributes = new UIStringAttributes() { ForegroundColor = UIColor.White };
-
 
                     shellRenderer.NavigationBar.Translucent = false;
                     shellRenderer.NavigationBar.StandardAppearance = appearance;

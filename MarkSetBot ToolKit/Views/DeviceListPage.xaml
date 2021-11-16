@@ -2,24 +2,12 @@
 <ContentPage
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="MarkSetBot_ToolKit.Views.WindPage"
+    x:Class="MarkSetBot_ToolKit.Views.DeviceListPage"
     xmlns:vm="clr-namespace:MarkSetBot_ToolKit.ViewModels"
-    xmlns:fontawesome="clr-namespace:MarkSetBot_ToolKit.Helper"
     Title="{Binding Title}">
 
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding SearchDeviceCommand}">
-            <ToolbarItem.IconImageSource>
-              <FontImageSource
-                FontFamily="{StaticResource FontAwesomeSolid}"
-                Glyph="{x:Static fontawesome:FontAwesomeIcon.Settings}"
-                Size="20" Color="Aqua"/>
-            </ToolbarItem.IconImageSource>
-        </ToolbarItem>
-    </ContentPage.ToolbarItems>
-
     <ContentPage.BindingContext>
-        <vm:WindViewModel/>
+        <vm:DeviceListViewModel/>
     </ContentPage.BindingContext>
 
     <ContentPage.Resources>
@@ -33,6 +21,15 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Label Text="Wind" Grid.Row="0"/>
+        <StackLayout Grid.Row="0">
+            <Button WidthRequest="100" BackgroundColor="#82C91E" Text="Search"/>
+        </StackLayout>        
+        <StackLayout Grid.Row="1" BindableLayout.ItemsSource="{Binding DeviceNames}">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate>
+                    <Label Text="{Binding}"/>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </StackLayout>
     </Grid>
 </ContentPage>

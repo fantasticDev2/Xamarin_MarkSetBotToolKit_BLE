@@ -18,5 +18,9 @@
   <ItemGroup>
     <None Remove="Shiny.BluetoothLE" />
     <None Remove="XF.Material" />
+    <None Remove="Helper\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Helper\" />
   </ItemGroup>
 </Project>

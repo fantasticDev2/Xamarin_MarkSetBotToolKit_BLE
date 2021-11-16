@@ -19,6 +19,7 @@ namespace MarkSetBot_ToolKit
 
         public override void ConfigureServices(IServiceCollection services, IPlatform platform)
         {
+            services.UseBleClient<Shiny.BluetoothLE.IBleDelegate>();
             services.UseBleClient();
         }
     }
