@@ -3,12 +3,9 @@
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="MarkSetBot_ToolKit.Views.DeviceListPage"
-    xmlns:vm="clr-namespace:MarkSetBot_ToolKit.ViewModels"
     Title="{Binding Title}">
 
-    <ContentPage.BindingContext>
-        <vm:DeviceListViewModel/>
-    </ContentPage.BindingContext>
+    
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -19,15 +16,23 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackLayout Grid.Row="0">
-            <Button WidthRequest="100" BackgroundColor="#82C91E" Text="Search"/>
-        </StackLayout>        
-        <StackLayout Grid.Row="1" BindableLayout.ItemsSource="{Binding DeviceNames}">
+            <Button WidthRequest="100" BackgroundColor="#82C91E" Text="Search" Command="{Binding SearchDevice}"/>
+        </StackLayout>
+        <StackLayout Grid.Row="1">
+            <ActivityIndicator IsRunning="{Binding Scanning}" Color="#82C91E"/>
+        </StackLayout>
+        <StackLayout Grid.Row="2" x:Name="DeviceList" BindableLayout.ItemsSource="{Binding DeviceNames}">
             <BindableLayout.ItemTemplate>
                 <DataTemplate>
-                    <Label Text="{Binding}"/>
+                    <StackLayout x:Name="Item">                        
+                        <Button Text="{Binding Source={x:Reference Item}, Path=BindingContext.BluetoothDevice.Address}" BindingContext="{Binding Source={x:Reference DeviceList}, Path=BindingContext}" 
+                                Command="{Binding ConnectDevice}" CommandParameter="{Binding Source={x:Reference Item}, Path=BindingContext}"/>    
+                    </StackLayout>
+                    
                 </DataTemplate>
             </BindableLayout.ItemTemplate>
         </StackLayout>

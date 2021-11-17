@@ -33,7 +33,6 @@ namespace MarkSetBot_ToolKit.iOS
             LoadApplication(new App());
             UINavigationBar.Appearance.Translucent = false;
 
-            global::XF.Material.iOS.Material.Init();
             this.OnPostFinishedLaunching(app, options);
 
             return base.FinishedLaunching(app, options);

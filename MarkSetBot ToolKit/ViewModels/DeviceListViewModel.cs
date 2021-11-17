@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using MarkSetBot_ToolKit.Helper;
+using Plugin.BLE;
 using Plugin.BLE.Abstractions.Contracts;
 using Xamarin.Forms;
 
@@ -13,22 +14,37 @@ namespace MarkSetBot_ToolKit.ViewModels
     {
         private IBluetoothLE ble;
         private IAdapter adapter;
+        private bool scanning = false;
 
-        public ObservableCollection<String> deviceNames = new ObservableCollection<string> { "Device 1", "Device 2"};
+        public ObservableCollection<IDevice> bleDevices = new ObservableCollection<IDevice> { };
+        public ObservableCollection<IDevice> _bleDevices = new ObservableCollection<IDevice> { };
 
-        public DeviceListViewModel(IBluetoothLE ble, IAdapter adapter)
+        public DeviceListViewModel()
         {
             Title = "Device List";
-            this.ble = ble;
-            this.adapter = adapter;
+            ble = CrossBluetoothLE.Current;
+            adapter = CrossBluetoothLE.Current.Adapter;
         }
 
-        public ObservableCollection<string> DeviceNames
+        public ObservableCollection<IDevice> DeviceNames
         {
-            get => deviceNames;
+            get => bleDevices;
             set
             {
-                deviceNames = value;
+                bleDevices = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool Scanning
+        {
+            get
+            {
+                return scanning;
+            }
+            set
+            {
+                scanning = value;
                 OnPropertyChanged();
             }
         }
@@ -38,14 +54,42 @@ namespace MarkSetBot_ToolKit.ViewModels
             get
             {
                 return new DelegateCommand(async (args) => {
-                    var scanner = CrossBleAdapter.Current.Scan().Subscribe(scanResult =>
+                    try
                     {
-                        // do something with it
-                        // the scanresult contains the device, RSSI, and advertisement packet
+                        bleDevices.Clear();
+                        Scanning = true;
+                        adapter.DeviceDiscovered += (s, a) => {
+                            _bleDevices.Add(a.Device);
+                            DeviceNames = _bleDevices;
+                        };
+                        if (!ble.Adapter.IsScanning)
+                        {
+                            adapter.ScanTimeout = 30000;
+                            await adapter.StartScanningForDevicesAsync();
+                            Scanning = false;
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception.Message);
+                    }
+                });
+            }
+        }
 
-                    });
-
-                    scanner.Dispose();
+        public ICommand ConnectDevice
+        {
+            get
+            {
+                return new DelegateCommand(async (object sender) => {
+                    try
+                    {
+                        IDevice device = bleDevices[bleDevices.IndexOf((IDevice)sender)];
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception.Message);
+                    }
                 });
             }
         }
