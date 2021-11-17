@@ -7,8 +7,10 @@ using Xamarin.Forms;
 using Shiny.BluetoothLE;
 using Shiny;
 
+
+
 namespace MarkSetBot_ToolKit.ViewModels
-{
+{    
     public class DeviceListViewModel : BaseViewModel
     {
         public ObservableCollection<String> deviceNames = new ObservableCollection<string> { "Device 1", "Device 2"};

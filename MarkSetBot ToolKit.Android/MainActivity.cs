@@ -4,24 +4,8 @@ using Android.App;
 using Android.Content.PM;
 using Android.Runtime;
 using Android.OS;
-using Shiny;
 using Android.Content;
 
-namespace MarkSetBot_ToolKit.Android
-{
-    [global::Android.App.ApplicationAttribute]
-    public partial class MainApplication : global::Android.App.Application
-    {
-        public MainApplication(IntPtr handle, JniHandleOwnership transfer) : base(handle, transfer) { }
-
-        public override void OnCreate()
-        {
-            this.ShinyOnCreate(new MarkSetBot_ToolKit.MarkSetBotStartup());
-            global::Xamarin.Essentials.Platform.Init(this);
-            base.OnCreate();
-        }
-    }
-}
 
 namespace MarkSetBot_ToolKit.Droid
 {
@@ -33,8 +17,6 @@ namespace MarkSetBot_ToolKit.Droid
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
-            this.ShinyOnCreate();
-            //this.OnPreCreate(savedInstanceState);
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
             base.OnCreate(savedInstanceState);
@@ -47,19 +29,16 @@ namespace MarkSetBot_ToolKit.Droid
         protected override void OnNewIntent(Intent intent)
         {
             base.OnNewIntent(intent);
-            this.ShinyOnNewIntent(intent);
         }
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {
             base.OnActivityResult(requestCode, resultCode, data);
-            this.ShinyOnActivityResult(requestCode, resultCode, data);
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Permission[] grantResults)
         {
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-            this.ShinyOnRequestPermissionsResult(requestCode, permissions, grantResults);
             global::Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 

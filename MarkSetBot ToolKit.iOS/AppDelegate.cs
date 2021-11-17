@@ -4,7 +4,6 @@ using System.Linq;
 
 using Foundation;
 using UIKit;
-using Shiny;
 
 namespace MarkSetBot_ToolKit.iOS
 {
@@ -29,7 +28,6 @@ namespace MarkSetBot_ToolKit.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             this.OnPreFinishedLaunching(app, options);
-            this.ShinyFinishedLaunching(new MarkSetBot_ToolKit.MarkSetBotStartup());
 
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
@@ -40,9 +38,5 @@ namespace MarkSetBot_ToolKit.iOS
 
             return base.FinishedLaunching(app, options);
         }
-
-        /*
-        THIS METHOD IS NEEDED BY MOST OF SHINY - ALWAYS ADD IT
-        */
-        public override void PerformFetch(UIApplication application, Action<UIBackgroundFetchResult> completionHandler) => this.ShinyPerformFetch(completionHandler);}
+    }
 }
