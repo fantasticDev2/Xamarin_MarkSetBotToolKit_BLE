@@ -9,9 +9,11 @@ namespace MarkSetBot_ToolKit.iOS
 {
     public class LinkerPleaseLink
     {
+        /*
         public void Include(MvvmCross.Plugins.BLE.iOS.Plugin plugin)
         {
             plugin.Load();
         }
+        */
     }
 }

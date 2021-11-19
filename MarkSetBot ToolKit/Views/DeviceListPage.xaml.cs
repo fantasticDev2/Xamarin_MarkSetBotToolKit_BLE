@@ -14,7 +14,7 @@ namespace MarkSetBot_ToolKit.Views
         {
             InitializeComponent();
 
-            BindingContext = _viewModel = new DeviceListViewModel();
+            BindingContext = _viewModel = new DeviceListViewModel(this);
         }
 
 

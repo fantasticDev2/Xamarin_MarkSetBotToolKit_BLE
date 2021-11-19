@@ -12,18 +12,16 @@ namespace MarkSetBot_ToolKit.ViewModels
 {    
     public class DeviceListViewModel : BaseViewModel
     {
-        private IBluetoothLE ble;
-        private IAdapter adapter;
+        public ContentPage CurrentPage;
         private bool scanning = false;
 
         public ObservableCollection<IDevice> bleDevices = new ObservableCollection<IDevice> { };
         public ObservableCollection<IDevice> _bleDevices = new ObservableCollection<IDevice> { };
 
-        public DeviceListViewModel()
+        public DeviceListViewModel(ContentPage currentPage)
         {
             Title = "Device List";
-            ble = CrossBluetoothLE.Current;
-            adapter = CrossBluetoothLE.Current.Adapter;
+            CurrentPage = currentPage;
         }
 
         public ObservableCollection<IDevice> DeviceNames
@@ -58,14 +56,14 @@ namespace MarkSetBot_ToolKit.ViewModels
                     {
                         bleDevices.Clear();
                         Scanning = true;
-                        adapter.DeviceDiscovered += (s, a) => {
+                        AppConfig.adapter.DeviceDiscovered += (s, a) => {
                             _bleDevices.Add(a.Device);
                             DeviceNames = _bleDevices;
                         };
-                        if (!ble.Adapter.IsScanning)
+                        if (!AppConfig.ble.Adapter.IsScanning)
                         {
-                            adapter.ScanTimeout = 30000;
-                            await adapter.StartScanningForDevicesAsync();
+                            AppConfig.adapter.ScanTimeout = 30000;
+                            await AppConfig.adapter.StartScanningForDevicesAsync();
                             Scanning = false;
                         }
                     }
@@ -85,6 +83,16 @@ namespace MarkSetBot_ToolKit.ViewModels
                     try
                     {
                         IDevice device = bleDevices[bleDevices.IndexOf((IDevice)sender)];
+                        await AppConfig.adapter.ConnectToDeviceAsync(device);
+                        AppConfig.connectedDevice = device;
+
+                        AppConfig.speedService = await AppConfig.connectedDevice.GetServiceAsync(Guid.Parse(AppConfig.speed_service_guid));
+                        AppConfig.speedCharacteristic = await AppConfig.speedService.GetCharacteristicAsync(Guid.Parse(AppConfig.speed_characteristic_guid));
+
+                        AppConfig.directionService = await AppConfig.connectedDevice.GetServiceAsync(Guid.Parse(AppConfig.direction_service_guid));
+                        AppConfig.directionCharacteristic = await AppConfig.directionService.GetCharacteristicAsync(Guid.Parse(AppConfig.direction_characteristic_guid));
+                        await CurrentPage.Navigation.PopAsync();
+                        
                     }
                     catch (Exception exception)
                     {
