@@ -18,7 +18,7 @@ namespace MarkSetBot_ToolKit.iOS.Renderers
                 {
                     var appearance = new UINavigationBarAppearance();
                     appearance.ConfigureWithOpaqueBackground();
-                    //appearance.BackgroundColor = new UIColor(red: 0.86f, green: 0.24f, blue: 0.00f, alpha: 1.00f);
+                    appearance.BackgroundColor = UIColor.Clear.FromHex(0x82C91E);
                     //appearance.TitleTextAttributes = new UIStringAttributes() { ForegroundColor = UIColor.White };
 
                     shellRenderer.NavigationBar.Translucent = false;
@@ -49,5 +49,17 @@ namespace MarkSetBot_ToolKit.iOS.Renderers
             return renderer;
         }
 
+    }
+
+    public static class UIColorExtensions
+    {
+        public static UIColor FromHex(this UIColor color, int hexValue)
+        {
+            return UIColor.FromRGB(
+                (((float)((hexValue & 0xFF0000) >> 16)) / 255.0f),
+                (((float)((hexValue & 0xFF00) >> 8)) / 255.0f),
+                (((float)(hexValue & 0xFF)) / 255.0f)
+            );
+        }
     }
 }

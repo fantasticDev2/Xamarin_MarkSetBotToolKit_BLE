@@ -37,6 +37,17 @@ namespace MarkSetBot_ToolKit.ViewModels
             lineChart = new LineChart() { Entries = entries };
             barChart1 = new BarChart { Entries = entries };
             lineChart1 = new LineChart { Entries = entries };
+
+            
+        }
+
+        private List<string> filterItems = new List<string>() { "5 minutes", "15 minutes", "30 minutes", "1 hour", "2 hours", "3 hours" };
+        public List<string> FilterItems
+        {
+            get
+            {
+                return filterItems;
+            }
         }
 
         public ICommand SearchDeviceCommand {
@@ -59,10 +70,24 @@ namespace MarkSetBot_ToolKit.ViewModels
             {
                 var bytes = args.Characteristic.Value;
                 AppConfig.speedValues.Enqueue(floatConversion(bytes));
+
+                float lastSum = 0;
+                List<float> lastItems = MiscExtensions.TakeLast<float>(AppConfig.speedValues, 3).ToList();
+                foreach (float value in lastItems)
+                {
+                    lastSum += value;
+                }
+                AppConfig.averageSpeedValues.Enqueue(lastSum / lastItems.Count);
+
                 if(AppConfig.speedValues.Count > 3600)
                 {
                     AppConfig.speedValues.Dequeue();
                 }
+                if(AppConfig.averageSpeedValues.Count > 3600)
+                {
+                    AppConfig.averageSpeedValues.Dequeue();
+                }
+                
 
             };
             await AppConfig.speedCharacteristic.StartUpdatesAsync();
@@ -74,12 +99,44 @@ namespace MarkSetBot_ToolKit.ViewModels
             {
                 var bytes = args.Characteristic.Value;
                 AppConfig.directionValues.Enqueue(floatConversion(bytes));
-                if(AppConfig.directionValues.Count > 3600)
+
+                float lastSum = 0;
+                List<float> lastItems = MiscExtensions.TakeLast<float>(AppConfig.directionValues, 3).ToList();
+                foreach (float value in lastItems)
+                {
+                    lastSum += value;
+                }
+                AppConfig.averageDirectionValues.Enqueue(lastSum / lastItems.Count);
+
+                if (AppConfig.directionValues.Count > 3600)
                 {
                     AppConfig.directionValues.Dequeue();
                 }
+                if (AppConfig.averageDirectionValues.Count > 3600)
+                {
+                    AppConfig.averageDirectionValues.Dequeue();
+                }
             };
             await AppConfig.directionCharacteristic.StartUpdatesAsync();
+        }
+
+        private string deviceConnectText = "Connect";
+
+        public ICommand DeviceConnect
+        {
+            get
+            {
+                return new DelegateCommand(async (args) => {
+                    try
+                    {
+                        //AppConfig.
+                    }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception.Message);
+                    }
+                });
+            }
         }
 
         public BarChart BarChart
@@ -169,6 +226,118 @@ namespace MarkSetBot_ToolKit.ViewModels
             BarChart = new BarChart() { Entries = speedEntries };
             LineChart = new LineChart() { Entries = directionEntries };
 
+        }
+
+
+        private int speedSelectedIndex;
+        public int SpeedSelectedIndex
+        {
+            get
+            {
+                return speedSelectedIndex;
+            }
+            set
+            {
+                if(speedSelectedIndex != value)
+                {
+                    speedSelectedIndex = value;
+                    OnPropertyChanged(nameof(SpeedSelectedIndex));
+                    updateSpeedChart(speedSelectedIndex);
+                }                
+            }
+        }
+
+        private int directionSelectedIndex;
+        public int DirectionSelectedIndex
+        {
+            get
+            {
+                return directionSelectedIndex;
+            }
+            set
+            {
+                if(directionSelectedIndex != value)
+                {
+                    directionSelectedIndex = value;
+                    OnPropertyChanged(nameof(DirectionSelectedIndex));
+                    // Update Direction chart
+                }
+            }
+        }
+
+        private int speedAverageSelectedIndex;
+        public int SpeedAverageSelectedIndex
+        {
+            get
+            {
+                return speedAverageSelectedIndex;
+            }
+            set
+            {
+                if (speedAverageSelectedIndex != value)
+                {
+                    speedAverageSelectedIndex = value;
+                    OnPropertyChanged(nameof(SpeedAverageSelectedIndex));
+                    // Update Average speed chart
+                }
+            }
+        }
+
+        private int directionAverageSelectedIndex;
+        public int DirectionAverageSelectedIndex
+        {
+            get
+            {
+                return directionAverageSelectedIndex;
+            }
+            set
+            {
+                if (directionAverageSelectedIndex != value)
+                {
+                    directionAverageSelectedIndex = value;
+                    OnPropertyChanged(nameof(DirectionAverageSelectedIndex));
+                    // Update Average direction chart
+                }
+            }
+        }
+
+        private void updateSpeedChart(int selectedIndex)
+        {
+            List<ChartEntry> speedEntries = new List<ChartEntry>();
+            int timeCount = 0;
+            if(selectedIndex == 0)
+            {
+                timeCount = 5 * 60;
+            }
+            else if(selectedIndex == 1)
+            {
+                timeCount = 15 * 60;
+            }
+            else if(selectedIndex == 2)
+            {
+                timeCount = 30 * 60;
+            }
+            foreach (float value in MiscExtensions.TakeLast<float>(AppConfig.speedValues, timeCount))
+            {
+                speedEntries.Add(new ChartEntry(value)
+                {
+                    Label = "",
+                    ValueLabel = value.ToString(),
+                    Color = SKColor.Parse("#2c3e50")
+                });
+            }
+            BarChart = new BarChart() { Entries = speedEntries };
+        }
+
+        public ICommand DirectionSelectedIndexChanged
+        {
+            get
+            {
+                // Updates speed chart only
+                return new DelegateCommand(async (arg) => {
+
+                });
+            }
         }
 
         private float floatConversion(byte[] bytes)
