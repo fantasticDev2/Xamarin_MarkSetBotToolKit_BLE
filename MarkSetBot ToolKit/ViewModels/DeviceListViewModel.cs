@@ -57,8 +57,13 @@ namespace MarkSetBot_ToolKit.ViewModels
                         bleDevices.Clear();
                         Scanning = true;
                         AppConfig.adapter.DeviceDiscovered += (s, a) => {
-                            _bleDevices.Add(a.Device);
-                            DeviceNames = _bleDevices;
+                            string deviceName = a.Device.Name;
+
+                            if(deviceName != null && deviceName == "ULTRASONIC")
+                            {
+                                _bleDevices.Add(a.Device);
+                                DeviceNames = _bleDevices;
+                            }
                         };
                         if (!AppConfig.ble.Adapter.IsScanning)
                         {

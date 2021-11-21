@@ -6,12 +6,14 @@ using MarkSetBot_ToolKit.Views;
 using Microcharts;
 using SkiaSharp;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 //using Entry = Microcharts.Chart.;
 
 
 namespace MarkSetBot_ToolKit.ViewModels
 {
-    public class WindViewModel: BaseViewModel
+    public class WindViewModel : BaseViewModel
     {
         private BarChart barChart;
         private LineChart lineChart;
@@ -23,39 +25,14 @@ namespace MarkSetBot_ToolKit.ViewModels
             Title = "Wind";
 
             Device.StartTimer(TimeSpan.FromSeconds(10), () => {
-                Device.BeginInvokeOnMainThread(async () =>
+                Device.BeginInvokeOnMainThread(() =>
                 {
-                    await UpdateCharts();
+                    UpdateCharts();
                 });                
                 return true;
             });
 
-            var entries = new[]
-             {
-                 new ChartEntry(212)
-                 {
-                     Label = "UWP",
-                     ValueLabel = "212",
-                     Color = SKColor.Parse("#2c3e50")
-                 },
-                 new ChartEntry(248)
-                 {
-                     Label = "Android",
-                     ValueLabel = "248",
-                     Color = SKColor.Parse("#77d065")
-                 },
-                 new ChartEntry(128)
-                 {
-                     Label = "iOS",
-                     ValueLabel = "128",
-                     Color = SKColor.Parse("#b455b6")
-                 },
-                 new ChartEntry(514)
-                 {
-                     Label = "Shared",
-                     ValueLabel = "514",
-                     Color = SKColor.Parse("#3498db")
-            } };
+            List<ChartEntry> entries = new List<ChartEntry>();
             barChart = new BarChart() { Entries = entries };
             lineChart = new LineChart() { Entries = entries };
             barChart1 = new BarChart { Entries = entries };
@@ -67,8 +44,42 @@ namespace MarkSetBot_ToolKit.ViewModels
             {
                 return new DelegateCommand(async (arg) => {
                     await Shell.Current.GoToAsync(nameof(DeviceListPage));
+                    if(AppConfig.speedCharacteristic != null && AppConfig.directionCharacteristic != null)
+                    {
+                        _ = ReadSpeed();
+                        _ = ReadDirection();
+                    }
                 });
             }
+        }
+
+        private async Task ReadSpeed()
+        {
+            AppConfig.speedCharacteristic.ValueUpdated += (o, args) =>
+            {
+                var bytes = args.Characteristic.Value;
+                AppConfig.speedValues.Enqueue(floatConversion(bytes));
+                if(AppConfig.speedValues.Count > 3600)
+                {
+                    AppConfig.speedValues.Dequeue();
+                }
+
+            };
+            await AppConfig.speedCharacteristic.StartUpdatesAsync();
+        }
+
+        private async Task ReadDirection()
+        {
+            AppConfig.directionCharacteristic.ValueUpdated += (o, args) =>
+            {
+                var bytes = args.Characteristic.Value;
+                AppConfig.directionValues.Enqueue(floatConversion(bytes));
+                if(AppConfig.directionValues.Count > 3600)
+                {
+                    AppConfig.directionValues.Dequeue();
+                }
+            };
+            await AppConfig.directionCharacteristic.StartUpdatesAsync();
         }
 
         public BarChart BarChart
@@ -123,13 +134,59 @@ namespace MarkSetBot_ToolKit.ViewModels
             }
         }
 
-        private async Task UpdateCharts() {
+        private void UpdateCharts() {
+            /*
             if (AppConfig.speedCharacteristic != null) {
                 var speedData = await AppConfig.speedCharacteristic.ReadAsync();
             }
             if (AppConfig.directionCharacteristic != null) {
                 var directionData = await AppConfig.directionCharacteristic.ReadAsync();
             }
+            */
+            List<ChartEntry> speedEntries = new List<ChartEntry>();
+            List<ChartEntry> directionEntries = new List<ChartEntry>();
+
+            foreach(float value in MiscExtensions.TakeLast<float>(AppConfig.speedValues, 100))
+            {
+                speedEntries.Add(new ChartEntry(value)
+                {
+                    Label = "",
+                    ValueLabel = value.ToString(),
+                    Color = SKColor.Parse("#2c3e50")
+                });
+            }
+
+            foreach(float value in MiscExtensions.TakeLast<float>(AppConfig.directionValues, 100))
+            {
+                directionEntries.Add(new ChartEntry(value)
+                {
+                    Label = "",
+                    ValueLabel = value.ToString(),
+                    Color = SKColor.Parse("#b455b6")
+                });
+            }
+
+            BarChart = new BarChart() { Entries = speedEntries };
+            LineChart = new LineChart() { Entries = directionEntries };
+
+        }
+
+        private float floatConversion(byte[] bytes)
+        {
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(bytes); 
+            }
+            float myFloat = BitConverter.ToSingle(bytes, 0);
+            return myFloat;
+        }
+    }
+
+    public static class MiscExtensions
+    {
+        public static IEnumerable<T> TakeLast<T>(this IEnumerable<T> source, int N)
+        {
+            return source.Skip(Math.Max(0, source.Count() - N));
         }
     }
 }

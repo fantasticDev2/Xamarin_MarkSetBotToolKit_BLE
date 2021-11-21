@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Plugin.BLE;
 using Plugin.BLE.Abstractions.Contracts;
 
@@ -21,5 +23,11 @@ namespace MarkSetBot_ToolKit.Helper
 
         public static string direction_service_guid = "0000181A-0000-1000-8000-00805F9B34FB";
         public static string direction_characteristic_guid = "00002A71-0000-1000-8000-00805F9B34FB";
+
+        public static Queue<float> speedValues = new Queue<float>();
+        public static Queue<float> directionValues = new Queue<float>();
+
+        public static Queue<float> averageSpeedQueue = new Queue<float>();
+        public static Queue<float> averageDirectionQueue = new Queue<float>();
     }
 }
