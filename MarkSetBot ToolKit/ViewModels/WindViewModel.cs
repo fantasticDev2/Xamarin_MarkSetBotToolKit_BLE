@@ -33,6 +33,14 @@ namespace MarkSetBot_ToolKit.ViewModels
             });
 
             List<ChartEntry> entries = new List<ChartEntry>();
+            for(int i = 0; i < 50; i++)
+            {
+                entries.Add(new ChartEntry(10) {
+                    Label = "",
+                    ValueLabel = "",
+                    Color = SKColor.Parse("#b455b6")
+                });
+            }
             barChart = new BarChart() { Entries = entries };
             lineChart = new LineChart() { Entries = entries };
             barChart1 = new BarChart { Entries = entries };

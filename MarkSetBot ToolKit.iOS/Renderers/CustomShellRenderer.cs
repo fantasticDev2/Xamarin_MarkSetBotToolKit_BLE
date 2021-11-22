@@ -19,7 +19,8 @@ namespace MarkSetBot_ToolKit.iOS.Renderers
                     var appearance = new UINavigationBarAppearance();
                     appearance.ConfigureWithOpaqueBackground();
                     appearance.BackgroundColor = UIColor.Clear.FromHex(0x82C91E);
-                    //appearance.TitleTextAttributes = new UIStringAttributes() { ForegroundColor = UIColor.White };
+                    
+                    appearance.TitleTextAttributes = new UIStringAttributes() { ForegroundColor = UIColor.White };
 
                     shellRenderer.NavigationBar.Translucent = false;
                     shellRenderer.NavigationBar.StandardAppearance = appearance;
@@ -41,7 +42,7 @@ namespace MarkSetBot_ToolKit.iOS.Renderers
                     var appearance = new UITabBarAppearance();
 
                     appearance.ConfigureWithOpaqueBackground();
-
+                    appearance.BackgroundColor = UIColor.Clear.FromHex(0x82C91E);
                     shellItemRenderer.TabBar.Translucent = false;
                     shellItemRenderer.TabBar.StandardAppearance = appearance;
                 }

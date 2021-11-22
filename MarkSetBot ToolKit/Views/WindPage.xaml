@@ -15,7 +15,7 @@
               <FontImageSource
                 FontFamily="{StaticResource FontAwesomeSolid}"
                 Glyph="{x:Static fontawesome:FontAwesomeIcon.Settings}"
-                Size="20" Color="Aqua"/>
+                Size="20" Color="White"/>
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
     </ContentPage.ToolbarItems>
